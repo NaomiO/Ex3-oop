@@ -62,7 +62,7 @@ public class MyCoords implements coords_converter
 			dx = Math.sin(dx)*EARTH_RADIUS; 
 			dy = Math.sin(dy)*EARTH_RADIUS*lon_norm; 
 			double distance = Math.sqrt(dx*dx + dy*dy); 
-		if (distance>100000) {
+		if (distance>100000000) {
 				throw new RuntimeException("The distance is too large"); 
 		}
 		return distance;

@@ -1,88 +1,94 @@
 package Packman_game;
+
 import Geom.Point3D;
 import Coords.MyCoords;
 
-//import java.awt.*;
-
-//import javax.imageio.ImageIO;
-//import java.awt.image.BufferedImage;
-//import java.io.File;
 
 public class map
 {
 
-//	Image map;
-	private Point3D max,min;
 	private Point3D LeftUpCorner;
 	private Point3D RightDownCorner;
-	private Point3D gps1;
-	private Point3D gps2;
-	private Point3D gps3;
-	private double width;
-	private double height;
-	private MyCoords Coords;
+	private double mapLon;
+	private double mapLat;
+	private double width = 1378; //=mapWidth
+	private double height = 642;//=mapHeight
 
-
+/**
+ * constructor default
+ */
 	public map()
 	{
-		this.max = new Point3D(max);
-		this.min = new Point3D(min);
-		this.LeftUpCorner = new Point3D(32.105770,  35.202469);
-		this.RightDownCorner = new Point3D(32.101899, 35.211588);
-		this.gps1= new Point3D(35.212405, 32.106046);
-		this.gps2= new Point3D(35.202574, 32.101650);
-		gps3= new Point3D(this.gps1.x(), this.gps2.y());
-		this.width = this.RightDownCorner.y()-this.LeftUpCorner.y();
-		this.height = this.RightDownCorner.x()-this.LeftUpCorner.x();
+			   
+		this.LeftUpCorner = new Point3D(32.101869,  35.202303);
+		this.RightDownCorner = new Point3D(32.105731,  35.212402);
+		this.mapLon = this.RightDownCorner.y()-this.LeftUpCorner.y();
+		this.mapLat = this.RightDownCorner.x()-this.LeftUpCorner.x();
 	}
 
-
-	public Point3D GPStoPixels(Point3D p )
+/**
+ * The function convert pointGps to point in Pixel
+ * @param pt
+ * @return Point in pixel
+ */
+	public Point3D GPStoPixels(Point3D pt )
 	{
-		double diffX= this.Coords.distance3d(gps3, gps2);
-
-		double diffY = this.Coords.distance3d( gps3,gps1);
 		
-//        double diffx =p.x() - min.x();
-//        double diffy = p.y() - min.y();
-
-        double heightC = max.x() - min.x();
-        double widthC = max.y() - min.y();
-
-        double x = (diffX * width) / heightC;
-        double y = (diffY * height) / widthC;
-
-        return new Point3D(x,y);
+		double x,y;
+		
+	    x=pt.y() - LeftUpCorner.y();
+	    y = RightDownCorner.x()-pt.x();
 	
+	    int x1 = (int) (width*(x/mapLon));
+	    int y1 = (int) (height*(y/mapLat));
+	    return new Point3D((int)x1, (int)y1);
+
 	}
 
 
-    public Point3D PixelstoGPS(Point3D p)
-    {
-    	double dx = this.Coords.distance3d(gps2, gps3);
-    	double lonX=((dx* p.x())/width)/*+this.min.x()*/;
-		double dy = this.Coords.distance3d(gps1, gps3);
-        double latY=((dy*p.y())/height)/*+this.min.y()*/;
-
-        Point3D gpsPoint=new Point3D(lonX,latY);
-        return gpsPoint;
+	/**
+	 * The function convert pointPixel to pointGps
+	 * @param pt
+	 * @return point in gps
+	 */
+	public Point3D PixelstoGPS(Point3D pt)
+    {    	
+		double latX = ((pt.x()/width)*mapLon);
+		double lonY = ((pt.y()/height)*mapLat);
+		
+		double CoordsX = RightDownCorner.x() -lonY; 
+		double CoordsY = LeftUpCorner.y()+ latX;
+		
+		Point3D gpsPoint= new Point3D(CoordsX,CoordsY);
+		return gpsPoint;
     }
-    
+	
+	
+    /**
+     * The function calculates distance between two pointPixel
+     * @param p1
+     * @param p2
+     * @return distance
+     */
     public double distancePixels(Point3D p1, Point3D p2) {
-    	Point3D x =  PixelstoGPS(p1);
-    	Point3D y =  PixelstoGPS(p2);
-    	MyCoords c = new MyCoords();
-    	double result = c.distance3d(x, y);
-    	return result;
+    	
+    	MyCoords coords = new MyCoords();
+    	
+    	Point3D p2gpsX =  PixelstoGPS(p1);
+    	Point3D p2gpsY =  PixelstoGPS(p2);
+    	
+    	double distance = coords.distance3d(p2gpsX, p2gpsY);
+    	return distance;
 
     }
 
-    public double azimut(Point3D p1, Point3D p2) {
-        MyCoords myCoords = new MyCoords();
-		double azi= myCoords.azimuth_elevation_dist(p1,p2)[0];
-		return azi;
-	}
-    
+    /**
+     * The function calculates angle between twp point
+     * @param p1
+     * @param p2
+     * @return angle 
+     */
+
     public double Angle(Point3D p1, Point3D p2) {
 
 		Point3D pix1= new Point3D(this.PixelstoGPS( p1));
@@ -94,5 +100,4 @@ public class map
 		double angle=Math.atan2(x, y);
 		return angle;
 	}
-    
-}   
+}

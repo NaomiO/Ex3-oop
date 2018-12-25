@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class-diagram version="1.2.2" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
   associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
-  <class id="1" language="java" name="GUI.Example01" project="OOP_EX2-EX4" 
-    file="/OOP_EX2-EX4/OOP_EX2-Ex4/src/GUI/Example01.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="286" y="333"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <package id="2" language="java" name="GUI" project="OOP_EX2-EX4" file="/OOP_EX2-EX4/OOP_EX2-Ex4/src/GUI" 
+  <package id="1" language="java" name="GUI" project="OOP_EX2-EX4" file="/OOP_EX2-EX4/OOP_EX2-Ex4/src/GUI" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="387" y="155"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </package>  
-  <class id="3" language="java" name="GUI.JFrmaeGraphics" project="OOP_EX2-EX4" 
-    file="/OOP_EX2-EX4/OOP_EX2-Ex4/src/GUI/JFrmaeGraphics.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="479" y="333"/>    
+  <class id="2" language="java" name="GUI.MainWindow" project="OOP_EX2-EX4" 
+    file="/OOP_EX2-EX4/OOP_EX2-Ex4/src/GUI/MainWindow.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="223" y="375"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="GUI.SimpleJButton" project="OOP_EX2-EX4" 
-    file="/OOP_EX2-EX4/OOP_EX2-Ex4/src/GUI/SimpleJButton.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="654" y="324"/>    
+  <class id="3" language="java" name="GUI.Main" project="OOP_EX2-EX4" file="/OOP_EX2-EX4/OOP_EX2-Ex4/src/GUI/Main.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="503" y="337"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      

@@ -1,80 +1,76 @@
+
 package Packman_game;
 
-import Geom.Point3D;
-import Packman_game.game;
-import Packman_game.fruits;
-import Packman_game.map;
-import Packman_game.Packman;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-
+import Coords.MyCoords;
 
 public class ShortestPathAlgo {
 	
-	public static class ShortestPath {
-
-		protected fruits bestFruit;
-		protected Packman bestPacman;
-		protected double bestTime;
-		
-		public ShortestPath (fruits bestFruit, Packman bestPackman, double minTime) {
-			this.bestFruit = bestFruit;
-			this.bestPacman = bestPackman;
-			this.bestTime = minTime;
-		}
-		
-		
+	/**
+	 * This class represents an algorithm that calculates the shortest path for each pacman to the closest fruits.
+	 */
+	public game game;
+	public ArrayList<Packman>path=new ArrayList<>();
+	
+	/**
+	 * Constructor that receives a game and uses the algorithm on this game using the informations it contains.
+	 * @param game
+	 */
+	public  ShortestPathAlgo (game game){
+		this.game = game;
 	}
 	
-	private static class ClosestPacman{
-		private double bestTime;
-		private Packman bestPackman;
-		
-		public ClosestPacman(double bestTime, Packman bestPackman) {
-			this.bestTime = bestTime;
-			this.bestPackman = bestPackman;
-		}
+	/**
+	 * This function is an algorithm that receives a game; pacmans and fruits points and calculates the shortest path between the pacmans and the fruits
+	 * @param game
+	 * @return the path in an arraylist of fruits points
+	 */
+	public ArrayList<Packman> ShortestPath (game game)
+	{
+		this.game = game;
+		MyCoords mycoords = new MyCoords();
 
+		ArrayList<Packman> pacList = new ArrayList<>();
+		pacList.addAll(game.getPackman());         //adds all the pacman to the array list
+		ArrayList<fruits> fruitList = new ArrayList<>();
+		fruitList.addAll(game.getfruits());  
+		
+		Iterator<fruits> itF = fruitList.iterator();
+		int index = 0;
+		int indexPath = 0;
+		
+		while(itF.hasNext())
+		{
+			fruits fruit = itF.next();
+			Iterator<Packman> itP = pacList.iterator();
+			Packman fastest = itP.next();
+			double bestTime =  (mycoords.distance3d(fastest.getGps_p(),fruit.getGps_f()) - fastest.getRadius())
+					/ fastest.getSpeed_weight();
+			
+			while(itP.hasNext())
+			{
+				Packman packman = itP.next();
+				double time = (mycoords.distance3d(packman.getGps_p(),fruit.getGps_f()) - packman.getRadius())
+						/ packman.getSpeed_weight();
+				if(time<bestTime)
+				{
+					bestTime = time;
+					fastest = packman;
+					if(pacList.size()-1 != index)
+						index++;
+
+				}
+			}
+
+			//change the place of the fastest packman to the place of fruit
+			pacList.set(index, new Packman(fastest.getRadius(),fastest.getSpeed_weight(),fruit.getGps_f()));
+			path.add(indexPath, new Packman(fastest.getRadius(),fastest.getSpeed_weight(),fruit.getGps_f()));
+			indexPath++;
+		}
+		return path;
 		
 	}
-	
-	public static ShortestPath shortest(map map, game game) {
-		double bestTime = 100000000;
-		fruits bestFruit = null;
-		Packman bestPacman = null;
-
-		for (fruits fruit : game.getfruits()) {  //run on the fruit array list
-			ClosestPacman pman = findClosestPacman(fruit, map, game);
-			double time = pman.bestTime;
-			Packman packman = pman.bestPackman;
-			if (time < bestTime) {
-				bestFruit = fruit;
-				bestPacman = packman;
-				bestTime = time;
-			}
-			if (bestTime == 0) {
-				break;
-			}
-		}
-		
-		return new ShortestPath(bestFruit, bestPacman, bestTime);
-	}
-	
-	private static ClosestPacman findClosestPacman(fruits fruit, map map, game game) {
-		
-		Point3D fruitPoint = fruit.getfruit_Points();
-		fruitPoint = map.GPStoPixels(fruitPoint);
-		double bestTime =100000000;
-		Packman bestPackman = null;
-		for (Packman packman : game.getPackman()) {
-			Point3D packmanPoint = packman.getPacman_Points();
-			packmanPoint = map.GPStoPixels(packmanPoint);
-			double time = (map.distancePixels(fruitPoint, packmanPoint) - packman.getRadius()) / packman.getSpeed_weight();
-			if (time < bestTime) {
-				bestPackman = packman;
-				bestTime = time;
-			}
-		}
-		return new ClosestPacman(bestTime, bestPackman);
-	}
-
 }
+	
