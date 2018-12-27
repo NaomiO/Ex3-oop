@@ -233,6 +233,7 @@ public class game {
 		ShortestPathAlgo test = new ShortestPathAlgo (this);
 		PrintWriter Print_kml_end = new PrintWriter(new File(getDiractroy()+".kml"));
 		p = test.ShortestPath(this);
+//		p.addAll(test.ShortestPath(this));
 
 		ArrayList<String> content = new ArrayList<String>();
 		String kmlstart = 
@@ -261,7 +262,7 @@ public class game {
 		
 		for (int i = 0; i < p.size(); i++) {
 			map testm=new map();
-			Point3D temp_point = testm.PixelstoGPS(p.get(i).getPacman_Points());
+			Point3D temp_point = testm.PixelstoGPS(p.get(i).getGps_p());
 			p.get(i).setPacman_Points(temp_point);
 		}
 		
@@ -280,8 +281,8 @@ public class game {
 					"<![CDATA[B"
 					+Name_of_data_reader[0]+": <b>"+"P"+" </b><br/>"
 					+Name_of_data_reader[1]+": <b>"+i+" </b><br/>"
-					+Name_of_data_reader[2]+": <b>"+p.get(i).getPacman_Points().x()+" </b><br/>" 
-					+Name_of_data_reader[3]+": <b>"+p.get(i).getPacman_Points().y()+" </b><br/>"
+					+Name_of_data_reader[2]+": <b>"+p.get(i).getGps_p().x()+" </b><br/>" 
+					+Name_of_data_reader[3]+": <b>"+p.get(i).getGps_p().y()+" </b><br/>"
 					+Name_of_data_reader[4]+": <b>"+p.get(i).getSpeed_weight()+" </b><br/>" 
 					+Name_of_data_reader[5]+": <b>"+p.get(i).getRadius()+" </b><br/>" 
 
@@ -289,7 +290,7 @@ public class game {
 						+"]]></description>\n" 
 						+"<styleUrl>#Packman</styleUrl>"+
 						"<Point>\n" +
-						"<coordinates>"+p.get(i).getPacman_Points().y()+","+p.get(i).getPacman_Points().x()+"</coordinates>" +
+						"<coordinates>"+p.get(i).getGps_p().y()+","+p.get(i).getGps_p().x()+"</coordinates>" +
 						"</Point>\n" +
 						"</Placemark>\n";
 

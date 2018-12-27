@@ -44,8 +44,13 @@ public class MainWindow extends JFrame implements MouseListener
 		this.addMouseListener(this); 
 	}
 
+	//****************************************************************INTERFACE-MENUBAR********************************************************************************
+
 	private void initGUI() 
 	{
+		/**
+		 * Adds a "Menu" category button
+		 */
 		MenuBar menuBar = new MenuBar();
 		Menu menu = new Menu("Menu"); 
 		MenuItem run = new MenuItem("Run Game");
@@ -56,7 +61,9 @@ public class MainWindow extends JFrame implements MouseListener
 		menu.add(exit);
 		this.setMenuBar(menuBar);
 
-
+		/**
+		 * Adds a "Add" category button
+		 */
 		Menu add = new Menu("Add"); 
 		MenuItem Add_Packman = new MenuItem("Add Packman");
 		MenuItem Add_Fruit = new MenuItem("Add Fruit");
@@ -67,6 +74,10 @@ public class MainWindow extends JFrame implements MouseListener
 		add.add(Add_Fruit);
 		this.setMenuBar(menuBar);
 
+		
+		/**
+		 * Adds a "Csv" category button
+		 */
 		Menu csv = new Menu("Csv"); 
 		MenuItem readCsv = new MenuItem("read Csv");
 		MenuItem saveCsv = new MenuItem("save Csv");
@@ -76,17 +87,25 @@ public class MainWindow extends JFrame implements MouseListener
 		csv.add(saveCsv);
 		this.setMenuBar(menuBar);
 
+		
+		/**
+		 * Adds a "Kml" category button
+		 */
 		Menu Kml = new Menu("Kml"); 
 		MenuItem saveToKml = new MenuItem("saveToKml");
 
-
+	
 		menuBar.add(Kml);
 		Kml.add(saveToKml);
 		this.setMenuBar(menuBar);
 
+		//****************************************************************GAME-INTERFACE********************************************************************************
 
 
 
+		/**
+		 * Paints a pacman icon and a fruit icon on the map
+		 */
 		Add_Packman.addActionListener(new ActionListener() {
 
 			@Override
@@ -98,10 +117,9 @@ public class MainWindow extends JFrame implements MouseListener
 		});
 
 
-
-
 		exit.addActionListener(new ActionListener() {
 
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -140,9 +158,15 @@ public class MainWindow extends JFrame implements MouseListener
 		}		
 
 
-		
+		//****************************************************************CSV********************************************************************************
 
 
+
+		/**
+		 * This function opens the user folder on our computer, lets us choose a csv file to open,
+		 * uses the function CsvRead in the class "game" that reads the data in the file and finally  paints the icons 
+		 * on the map according to their coordinates.
+		 */
 		readCsv.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -188,7 +212,10 @@ public class MainWindow extends JFrame implements MouseListener
 			}
 		});
 
-
+		/**
+		 * This function uses the function CsvSave in the class "game" that creates a new csv file
+		 *  filled with the data from the pacmans/fruits icons present on the map and saves it in our project. 
+		 */
 		saveCsv.addActionListener(new ActionListener() {
 
 			@Override
@@ -201,8 +228,12 @@ public class MainWindow extends JFrame implements MouseListener
 		});
 
 
+		//****************************************************************KML********************************************************************************
 
-
+/**
+ * This function uses the function "saveTokml" from the class "game" and saves a pacman/fruit sequence
+ *  in a kml type of file that it saved on our project file.
+ */
 		saveToKml.addActionListener(new ActionListener() {
 
 			@Override
@@ -223,6 +254,9 @@ public class MainWindow extends JFrame implements MouseListener
 
 	}
 
+	/**
+	 * This function paints the pacman/fruit sequence.
+	 */
 	public void paint(Graphics g)
 	{
 
@@ -258,8 +292,12 @@ public class MainWindow extends JFrame implements MouseListener
 			}
 		}}
 
+	//****************************************************************MOUSE-FUNCTIONS********************************************************************************
 
-
+	
+	/**
+	 * This function convert pixel points into gps points and adds the pixel icon on the map by clicking on it
+	 */
 	@Override
 	public void mouseClicked(MouseEvent arg) {
 
@@ -294,21 +332,31 @@ public class MainWindow extends JFrame implements MouseListener
 		repaint();
 	}
 
+	
+	/**
+	 * Prints a message every time the mouse enters the map
+	 */
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		System.out.println("mouse entered");
 
 	}
 
+	/**
+	 * Prints a message every time the mouse exits the map
+	 */
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		System.out.println("mouse exited");
 
 	}
 
+	/**
+	 * Prints a message every time the mouse is pressed on the map
+	 */
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		System.out.println("mouse pressed");
 
 	}
 

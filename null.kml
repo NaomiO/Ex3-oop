@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2"><Document>
+<name> Points with TimeStamps</name>
+ <Style id="red">
+<IconStyle><Icon><href>http://maps.google.com/mapfiles/ms/icons/red-dot.png</href></Icon></IconStyle>
+</Style><Style id="Packman"><IconStyle><Icon><href>http://www.iconhot.com/icon/png/quiet/256/pac-man.png</href></Icon></IconStyle>
+</Style><Style id="Fruit"><IconStyle><Icon><href>http://www.stickpng.com/assets/images/580b57fcd9996e24bc43c316.png</href></Icon></IconStyle></Style>
+
+    <Style id="check-hide-children">
+      <ListStyle>
+        <listItemType>checkHideChildren</listItemType>
+      </ListStyle>
+    </Style>
+    <styleUrl>#check-hide-children</styleUrl>
+<Folder><name>GAME PACKMAN</name>
+
+
+<Placemark>
+<name><![CDATA[Packman]]></name>
+<description><![CDATA[BType: <b>P </b><br/>id: <b>0 </b><br/>Lat: <b>32.10435343302181 </b><br/>Lon: <b>35.204047239477504 </b><br/>Speed/Weight: <b>1.0 </b><br/>Radius: <b>1.0 </b><br/>]]></description>
+<styleUrl>#Packman</styleUrl><Point>
+<coordinates>35.204047239477504,32.10435343302181</coordinates></Point>
+</Placemark>
+
+</Folder>
+</Document>
+</kml>

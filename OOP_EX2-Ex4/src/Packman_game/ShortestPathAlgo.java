@@ -12,7 +12,6 @@ public class ShortestPathAlgo {
 	 * This class represents an algorithm that calculates the shortest path for each pacman to the closest fruits.
 	 */
 	public game game;
-	public ArrayList<Packman>path=new ArrayList<>();
 	
 	/**
 	 * Constructor that receives a game and uses the algorithm on this game using the informations it contains.
@@ -30,6 +29,7 @@ public class ShortestPathAlgo {
 	public ArrayList<Packman> ShortestPath (game game)
 	{
 		this.game = game;
+		ArrayList<Packman>path=new ArrayList<>();
 		MyCoords mycoords = new MyCoords();
 
 		ArrayList<Packman> pacList = new ArrayList<>();

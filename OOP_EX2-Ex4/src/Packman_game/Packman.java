@@ -21,7 +21,7 @@ public class Packman {
 	public Packman(double radius,double speed_weight,Point3D Pac) {
 		this.radius = radius;
 		this.speed_weight = speed_weight;
-		this.Pacman_Points=Pac;
+		this.gps_p=Pac;
 	}
 	
 	@Override
