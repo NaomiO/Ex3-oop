@@ -1,6 +1,8 @@
 package GUI;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Menu;
 import java.awt.MenuBar;
@@ -14,298 +16,295 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import Coords.MyCoords;
+import Packman_game.Path;
 import Geom.Point3D;
-import Packman_game.Packman;
 import Packman_game.fruits;
+import Packman_game.Packman;
+import Packman_game.ShortestPathAlgo;
 import Packman_game.game;
 import Packman_game.map;
+ 
+
 
 public class MainWindow extends JFrame implements MouseListener
 {
-	private static final long serialVersionUID = 1L;
+	private boolean ans=false;
+	game game=new game();
+	map map;
+	ArrayList<Path> arr;
+
+	public ArrayList<Packman>Pac_array=new ArrayList<>();
+	public ArrayList<fruits>Fruits_array=new ArrayList<>();
+	public int Mygame_run=0;
 	public BufferedImage myImage;
 	public BufferedImage Fruit;
 	public BufferedImage Pacman;
-	public game Mygame=new game();
-	public int Mygame_run=0;
-	public map map = new map();
-	public ArrayList<Packman>Pac_array=new ArrayList<>();
-	public ArrayList<fruits>Fruits_array=new ArrayList<>();
 
-	MainWindow() 
+
+
+	public MainWindow() 
 	{
 		initGUI();		
 		this.addMouseListener(this); 
 	}
 
-	//****************************************************************INTERFACE-MENUBAR********************************************************************************
+	private ArrayList<Path> copyArray(ArrayList a){
+		ArrayList<Path> arrM = new ArrayList<Path>();
+		for(int i=0; i<a.size(); i++) {
+			arrM.add((Path) a.get(i));
+		}
 
-	private void initGUI() 
-	{
-		/**
-		 * Adds a "Menu" category button
-		 */
-		MenuBar menuBar = new MenuBar();
-		Menu menu = new Menu("Menu"); 
-		MenuItem run = new MenuItem("Run Game");
-		MenuItem exit = new MenuItem("Exit");
-
-		menuBar.add(menu);
-		menu.add(run);
-		menu.add(exit);
-		this.setMenuBar(menuBar);
-
-		/**
-		 * Adds a "Add" category button
-		 */
-		Menu add = new Menu("Add"); 
-		MenuItem Add_Packman = new MenuItem("Add Packman");
-		MenuItem Add_Fruit = new MenuItem("Add Fruit");
-
-
-		menuBar.add(add);
-		add.add(Add_Packman);
-		add.add(Add_Fruit);
-		this.setMenuBar(menuBar);
-
-		
-		/**
-		 * Adds a "Csv" category button
-		 */
-		Menu csv = new Menu("Csv"); 
-		MenuItem readCsv = new MenuItem("read Csv");
-		MenuItem saveCsv = new MenuItem("save Csv");
-
-		menuBar.add(csv);
-		csv.add(readCsv);
-		csv.add(saveCsv);
-		this.setMenuBar(menuBar);
-
-		
-		/**
-		 * Adds a "Kml" category button
-		 */
-		Menu Kml = new Menu("Kml"); 
-		MenuItem saveToKml = new MenuItem("saveToKml");
-
-	
-		menuBar.add(Kml);
-		Kml.add(saveToKml);
-		this.setMenuBar(menuBar);
-
-		//****************************************************************GAME-INTERFACE********************************************************************************
-
-
-
-		/**
-		 * Paints a pacman icon and a fruit icon on the map
-		 */
-		Add_Packman.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				Mygame_run=-1;
-				repaint();
-			}
-		});
-
-
-		exit.addActionListener(new ActionListener() {
-
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-
-		Add_Fruit.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				Mygame_run=1;
-				repaint();
-			}
-		});
-
-		try {
-			myImage = ImageIO.read(new File("PNGFiles/Ariel1.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
-
-
-		try {
-			Pacman = ImageIO.read(new File("PNGFiles/pacman.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
-
-		try {
-			Fruit = ImageIO.read(new File("PNGFiles/fruit.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
-
-
-		//****************************************************************CSV********************************************************************************
-
-
-
-		/**
-		 * This function opens the user folder on our computer, lets us choose a csv file to open,
-		 * uses the function CsvRead in the class "game" that reads the data in the file and finally  paints the icons 
-		 * on the map according to their coordinates.
-		 */
-		readCsv.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-
-				JFileChooser file = new JFileChooser();
-				file.setCurrentDirectory(new File(System.getProperty("user.home")));
-				file.setDialogTitle("Choose a file");
-				file.setAcceptAllFileFilterUsed(false);
-				int val = file.showOpenDialog(null);
-				FileNameExtensionFilter csv = new FileNameExtensionFilter("csv","CSV");
-				file.addChoosableFileFilter(csv);
-
-
-				if (val == JFileChooser.APPROVE_OPTION) {
-
-					System.out.println(file.getSelectedFile().getPath());
-
-					game temp_game = new game(Fruits_array,Pac_array);
-
-
-					temp_game.CsvRead(file.getSelectedFile().getPath());
-					
-
-					for (int i = 0; i < temp_game.p.size(); i++) {
-						Point3D temp_point=new Point3D(temp_game.p.get(i).getPacman_Points().x()/getWidth() , temp_game.p.get(i).getPacman_Points().y()/getHeight(), 0);
-						temp_game.p.get(i).setPacman_Points(temp_point);
-					}
-					for (int i = 0; i < temp_game.f.size(); i++) {
-						Point3D temp_point=new Point3D(temp_game.f.get(i).getfruit_Points().x()/getWidth() , temp_game.f.get(i).getfruit_Points().y()/getHeight(), 0);
-						temp_game.f.get(i).setfruit_Points(temp_point);
-					
-					}
-					Mygame.p = temp_game.p;
-					Mygame.f = temp_game.f;
-
-					Mygame.file_directory = temp_game.file_directory;
-					Mygame_run=2;
-
-					repaint();
-
-
-				}
-			}
-		});
-
-		/**
-		 * This function uses the function CsvSave in the class "game" that creates a new csv file
-		 *  filled with the data from the pacmans/fruits icons present on the map and saves it in our project. 
-		 */
-		saveCsv.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				Mygame.CsvSave();
-				repaint();
-
-			}
-		});
-
-
-		//****************************************************************KML********************************************************************************
-
-/**
- * This function uses the function "saveTokml" from the class "game" and saves a pacman/fruit sequence
- *  in a kml type of file that it saved on our project file.
- */
-		saveToKml.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				try {
-					Mygame.saveTokml();
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				repaint();
-
-			}
-		});
-
-
-
+		return arrM; 
 	}
 
-	/**
-	 * This function paints the pacman/fruit sequence.
-	 */
+	private void initGUI()
+	{
+		
+		MenuBar menuBar = new MenuBar();
+		Menu menu = new Menu("game"); 
+		Menu menu1 = new Menu("file"); 
+		MenuItem pacman = new MenuItem("add a pacman");
+		MenuItem fruit = new MenuItem("add a fruit");
+		MenuItem run = new MenuItem("run the game");
+		MenuItem load = new MenuItem("load a file");
+		MenuItem csv = new MenuItem("save csv");
+		MenuItem clear = new MenuItem("clear the screen");
+		MenuItem exit = new MenuItem("exit");
+		MenuItem kml = new MenuItem("save to kml");
+
+
+		menuBar.add(menu);
+		menuBar.add(menu1);
+
+		menu.add(pacman);
+		menu.add(fruit);
+		menu.add(run);
+		menu1.add(load);
+		menu1.add(csv);
+		menu.add(clear);
+		menu.add(exit);
+		menu1.add(kml);
+
+
+		this.setMenuBar(menuBar);
+	
+
+	pacman.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			Mygame_run=-1;
+			repaint();
+		}
+	});
+
+
+
+	fruit.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			Mygame_run=1;
+			repaint();
+		}
+	});
+	
+	
+	
+	run.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent listnerPlay) {
+			if (listnerPlay.getActionCommand().equals("run the game")) {
+				Mygame_run = 3; 
+				if (ans) {
+				for (int i = 0; i < game.p.size(); i++) {
+					Point3D temp_point=map.PixelstoGPS(new Point3D(game.p.get(i).getPacman_Points().x()/getWidth() , game.p.get(i).getPacman_Points().y()/getHeight(), 0));
+					game.p.get(i).setPacman_Points(temp_point);
+				} 
+				for (int i = 0; i < game.f.size(); i++) {
+					Point3D temp_point=map.PixelstoGPS(new Point3D(game.f.get(i).getfruit_Points().x()/getWidth() , game.f.get(i).getfruit_Points().y()/getHeight(), 0));
+					game.f.get(i).setfruit_Points(temp_point);
+				}
+				}
+				arr= new ShortestPathAlgo(game).getSolution();      ///////////////
+				repaint();
+			}
+		}
+	});
+	
+	
+	load.addActionListener(new ActionListener() {
+
+		public void actionPerformed(ActionEvent e) {
+
+			JFileChooser file = new JFileChooser();
+			file.setCurrentDirectory(new File(System.getProperty("user.home")));
+			file.setDialogTitle("Choose a file");
+			file.setAcceptAllFileFilterUsed(false);
+			int val = file.showOpenDialog(null);
+			FileNameExtensionFilter csv = new FileNameExtensionFilter("csv","CSV");
+			file.addChoosableFileFilter(csv);
+
+
+			if (val == JFileChooser.APPROVE_OPTION) {
+				game temp_game = new game(Fruits_array,Pac_array);
+
+
+				temp_game.CsvRead(file.getSelectedFile().getPath());
+				
+
+				for (int i = 0; i < temp_game.p.size(); i++) {
+					Point3D temp_point=new Point3D(temp_game.p.get(i).getPacman_Points().x()/getWidth() , temp_game.p.get(i).getPacman_Points().y()/getHeight(), 0);
+					temp_game.p.get(i).setPacman_Points(temp_point);
+				} 
+				for (int i = 0; i < temp_game.f.size(); i++) {
+					Point3D temp_point=new Point3D(temp_game.f.get(i).getfruit_Points().x()/getWidth() , temp_game.f.get(i).getfruit_Points().y()/getHeight(), 0);
+					temp_game.f.get(i).setfruit_Points(temp_point);
+				
+				}
+				game.p = temp_game.p;
+				game.f = temp_game.f;
+
+				game.file_directory = temp_game.file_directory;
+				Mygame_run=2;
+				 ans = true;
+				repaint();
+
+
+			}
+		}
+	});
+	
+	
+	csv.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent saveGame) {
+			if (saveGame.getActionCommand().equals("save csv")) {
+					game.CsvSave();
+			}
+		}});
+	
+	
+
+	
+	clear.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent listenClear) {
+			if (listenClear.getActionCommand().equals("Clear")) {
+				Mygame_run = 4; 
+				game.f.clear();
+				game.p.clear();
+				repaint();
+				if(arr!=null)
+					arr.clear();
+			}
+		}});
+	
+	
+	exit.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent saveGame) {
+			if (saveGame.getActionCommand().equals("exit")) {
+				System.exit(0);
+			}
+		}});
+	
+	
+	kml.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent saveGame) {
+			if (saveGame.getActionCommand().equals("save to kml")) {
+				ArrayList<Path> a= new ShortestPathAlgo(game).getSolution();    //////
+				try {
+					game.saveTokml("kmlFile", a);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}});
+	
+
+	try {
+		myImage = ImageIO.read(new File("PNGFiles/Ariel1.png"));
+		Pacman = ImageIO.read(new File("PNGFiles/pacman.png"));
+		Fruit =  ImageIO.read(new File("PNGFiles/fruit.png"));
+	} catch (IOException e) {
+		e.printStackTrace();
+	}	
+	
+	}
+	
+	
 	public void paint(Graphics g)
 	{
-
 		Image temp=myImage.getScaledInstance(this.getWidth(), this.getHeight(),myImage.SCALE_SMOOTH);
 		g.drawImage(temp, 0, 0,this.getWidth(),this.getHeight(),null);
 
 		double x1=0;
 		double y1=0;
-		if(Mygame_run!=0) {
+		Color line = new Color(255, 255, 255); //color white
 
-			for (int i = 0; i < Mygame.getPackman().size(); i++) {
+		if(Mygame_run!=4) {
 
-				x1=(Mygame.getPackman().get(i).getPacman_Points()).x()*getWidth();
-				y1=(Mygame.getPackman().get(i).getPacman_Points()).y()*getHeight();
+			for (int i = 0; i < game.getPackman().size(); i++) {
 
-
-				g.drawImage(Pacman,(int)x1,(int)y1,30,30,null);
-
+				x1=(game.getPackman().get(i).getPacman_Points()).x()*getWidth();
+				y1=(game.getPackman().get(i).getPacman_Points()).y()*getHeight();
 
 
-			}
-
-			for (int i = 0; i < Mygame.getfruits().size(); i++) {
-
-				x1=( Mygame.getfruits().get(i).getfruit_Points().x())*getWidth();
-				y1=(Mygame.getfruits().get(i).getfruit_Points().y())*getHeight();
-
-
-				g.drawImage(Fruit,(int)x1,(int)y1,30,30,null);
+				g.drawImage(Pacman,(int)x1,(int)y1,40,40,null);
 
 
 
 			}
-		}}
 
-	//****************************************************************MOUSE-FUNCTIONS********************************************************************************
+			for (int i = 0; i < game.getfruits().size(); i++) {
+
+				x1=( game.getfruits().get(i).getfruit_Points().x())*getWidth();
+				y1=(game.getfruits().get(i).getfruit_Points().y())*getHeight();
+
+
+				g.drawImage(Fruit,(int)x1,(int)y1,35,35,null);
+
+
+
+			}
+		}
+		
+		
+		if(Mygame_run==3 && ans != true) {
+			Iterator<Path> it1= arr.iterator();          
+			while(it1.hasNext()) { 
+				Path path = it1.next();
+				for(int i=1; i<path.size();i++) {
+					Point3D sec = path.get(i);
+					sec= map.GPStoPixels(sec);
+					Point3D first = path.get(i-1);
+					first = map.GPStoPixels(first);
+					g.setColor(line);
+					g.drawLine((int)first.x(),(int) first.y(),(int) sec.x(), (int)sec.y());
+
+			}	
+		}
+	}
+	}
 
 	
-	/**
-	 * This function convert pixel points into gps points and adds the pixel icon on the map by clicking on it
-	 */
 	@Override
 	public void mouseClicked(MouseEvent arg) {
-
 
 		double x=arg.getX();
 
 		double y=arg.getY();
-
+		map map = new map();
 		Point3D gps_add= map.PixelstoGPS(new Point3D(x,y));
 		x=x/getWidth();
 		y=y/getHeight();
@@ -315,12 +314,12 @@ public class MainWindow extends JFrame implements MouseListener
 		if (Mygame_run==1)
 		{
 
-			Mygame.getfruits().add(new fruits(1,add_point,gps_add));
+			game.getfruits().add(new fruits(1,add_point,gps_add));
 			repaint();
 		}
 		if (Mygame_run==-1)
 		{
-			Mygame.getPackman().add(new Packman(1, 1, add_point,gps_add));
+			game.getPackman().add(new Packman(1, 1, add_point,gps_add));
 			repaint();
 		}
 
@@ -332,38 +331,19 @@ public class MainWindow extends JFrame implements MouseListener
 		repaint();
 	}
 
-	
-	/**
-	 * Prints a message every time the mouse enters the map
-	 */
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		System.out.println("mouse entered");
-
 	}
 
-	/**
-	 * Prints a message every time the mouse exits the map
-	 */
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		System.out.println("mouse exited");
-
 	}
 
-	/**
-	 * Prints a message every time the mouse is pressed on the map
-	 */
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		System.out.println("mouse pressed");
-
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
-
 }

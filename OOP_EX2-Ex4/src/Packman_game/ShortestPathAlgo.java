@@ -1,76 +1,88 @@
-
 package Packman_game;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import Coords.MyCoords;
 
-public class ShortestPathAlgo {
-	
-	/**
-	 * This class represents an algorithm that calculates the shortest path for each pacman to the closest fruits.
-	 */
-	public game game;
-	
-	/**
-	 * Constructor that receives a game and uses the algorithm on this game using the informations it contains.
-	 * @param game
-	 */
-	public  ShortestPathAlgo (game game){
-		this.game = game;
-	}
-	
-	/**
-	 * This function is an algorithm that receives a game; pacmans and fruits points and calculates the shortest path between the pacmans and the fruits
-	 * @param game
-	 * @return the path in an arraylist of fruits points
-	 */
-	public ArrayList<Packman> ShortestPath (game game)
-	{
-		this.game = game;
-		ArrayList<Packman>path=new ArrayList<>();
-		MyCoords mycoords = new MyCoords();
+import Packman_game.game;
+import Packman_game.Packman;
+import Packman_game.Path;
+import Packman_game.fruits;
 
-		ArrayList<Packman> pacList = new ArrayList<>();
-		pacList.addAll(game.getPackman());         //adds all the pacman to the array list
-		ArrayList<fruits> fruitList = new ArrayList<>();
-		fruitList.addAll(game.getfruits());  
+
+public class ShortestPathAlgo extends ArrayList<Path> {
+	
+	static ArrayList<Path> Paths = new ArrayList<Path>();
+	ArrayList<fruits> tempFruits;
+	ArrayList<Packman> tempPackmans;
+	
+	public ShortestPathAlgo(game game) {
 		
-		Iterator<fruits> itF = fruitList.iterator();
-		int index = 0;
-		int indexPath = 0;
+		tempFruits = new ArrayList<fruits>(game.getfruits()); 
+		tempPackmans = new ArrayList<Packman>(game.getPackman());
 		
-		while(itF.hasNext())
-		{
-			fruits fruit = itF.next();
-			Iterator<Packman> itP = pacList.iterator();
-			Packman fastest = itP.next();
-			double bestTime =  (mycoords.distance3d(fastest.getGps_p(),fruit.getGps_f()) - fastest.getRadius())
-					/ fastest.getSpeed_weight();
+		while(!tempFruits.isEmpty()) {
 			
-			while(itP.hasNext())
-			{
-				Packman packman = itP.next();
-				double time = (mycoords.distance3d(packman.getGps_p(),fruit.getGps_f()) - packman.getRadius())
-						/ packman.getSpeed_weight();
-				if(time<bestTime)
-				{
-					bestTime = time;
-					fastest = packman;
-					if(pacList.size()-1 != index)
-						index++;
+			Iterator<Packman> itP= game.getPackman().iterator();
+			Iterator<Packman> temp_itP= tempPackmans.iterator();
 
+			double min= 100000000;
+			Packman bestPac= itP.next();
+			
+			while(temp_itP.hasNext())
+			{
+				Iterator<fruits> itF= tempFruits.iterator();	
+				
+				Packman p= temp_itP.next();
+				double minTimeToFruit= 1000000000;
+				
+				while(itF.hasNext()) {
+					fruits runner= itF.next();
+					double time= p.getGps_p().distance2D(runner.getGps_f());
+					time= time/p.getSpeed_weight();
+					if(time<= minTimeToFruit) {
+						minTimeToFruit= time;
+						p.setTimeToFruit(time);
+						p.setCloseFruit(runner);
+					}
+				}	
+				
+				if(p.getTimeToFruit()<= min) {
+					min= p.getTimeToFruit();
+					bestPac= p;
 				}
 			}
+			
+			double time= bestPac.getTimeToFruit();
+			bestPac.setGps_p(bestPac.getCloseFruit().getGps_f());
+			bestPac.setTime(time);
+			bestPac.getMypath().add(bestPac.getCloseFruit().getGps_f());
+			bestPac.getMypath().addPointTime(time);
+			int i= tempFruits.indexOf(bestPac.getCloseFruit());
+			tempFruits.remove(i);
 
-			//change the place of the fastest packman to the place of fruit
-			pacList.set(index, new Packman(fastest.getRadius(),fastest.getSpeed_weight(),fruit.getGps_f()));
-			path.add(indexPath, new Packman(fastest.getRadius(),fastest.getSpeed_weight(),fruit.getGps_f()));
-			indexPath++;
+			bestPac.addScore(bestPac.getCloseFruit().getSpeed_weight());
 		}
-		return path;
 		
+		Iterator<Packman> temp= tempPackmans.iterator();
+		while(temp.hasNext()) {
+			Packman p= temp.next();
+			Paths.add(p.getMypath());
+		}
+		addScores(game, tempPackmans);
 	}
-}
 	
+	public ArrayList<Path> getSolution(){
+		return Paths;
+	}
+
+	public void addScores(game game, ArrayList<Packman> tempPackmans) {
+		
+		for(int i=0; i<tempPackmans.size(); i++) {
+			game.getPackman().get(i).setScore(tempPackmans.get(i).getScore());
+			
+		}
+	}
+	
+
+}

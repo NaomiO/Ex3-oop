@@ -79,7 +79,7 @@ public class Point3D implements Geom_element, Serializable
 	
 	public double distance3D(Point3D p2) {
 		return this.distance3D(p2.x(), p2.y(), p2.z());   }
-	
+	 
 	public double distance3D(double x, double y , double z)
 	{
 		double dx = _x-x;
@@ -260,6 +260,11 @@ public final static int DOWN = 6, UP = 7;
 	/** transform from radians to angles */
 	public static double d2r(double a) { return Math.toRadians(a);}
 	////////////////////////////////////////////////////////////////////////////////
+	public void vector (Point3D point) {
+    	_x=_x-point.x();
+    	_y=_y-point.y();
+    	_z=_z-point.z();
+    }
 	
 
 

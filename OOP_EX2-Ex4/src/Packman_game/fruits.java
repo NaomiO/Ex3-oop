@@ -13,10 +13,15 @@ public class fruits {
  * A class that represents a "target" in a known geographic location
  */
 	private double speed_weight;
-
+	private double Lat;
+	private double Lon;
+	private double Alt;
+	private double ID;
+	private double Wt;
 	Point3D fruit_Points;
 	private Point3D gps_f;
 
+	public fruits() {}
 /**
  * The constructor receives speed_weight and fruit_Points
  * @param speed_weight
@@ -28,6 +33,27 @@ public class fruits {
 
 	}
 	
+	
+	public fruits( double Lat,double Lon,double Alt,double Weight,int ID ) {
+		this.setLat(Lat);
+		this.setLon(Lon);
+		this.setAlt(Alt);
+		this.setSpeed_weight(Weight);
+		this.ID=ID;
+	}
+	private void setLon(double lon) {
+		Lon = lon;
+		
+	}
+
+	private void setLat(double lat) {
+		Lat = lat;
+	}
+
+	private void setAlt(double alt) {
+		Alt = alt;
+		
+	}
 	/**
 	 * The constructor receives fruit_Points
 	 * @param fruit_Points
@@ -100,6 +126,17 @@ public class fruits {
 	 */
 	public void setGps_f(Point3D gps_f) {
 		this.gps_f = gps_f;
+	}
+
+	public double getLat() {
+		return Lat;
+	}
+
+	public double getLon() {
+		return Lon;
+	}
+	public double getAlt() {
+		return Alt;
 	}
 	
 }

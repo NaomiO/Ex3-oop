@@ -41,7 +41,7 @@ public class map
 	
 	    int x1 = (int) (width*(x/mapLon));
 	    int y1 = (int) (height*(y/mapLat));
-	    return new Point3D((int)x1, (int)y1);
+	    return new Point3D(x1, y1);
 
 	}
 
